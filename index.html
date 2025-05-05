@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pitsco Educational Drone Parts Portal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .tabs {
+      margin-top: 1rem;
+    }
+    .tabs button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      border: none;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .tabs button.active {
+      background: #005fa3;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card img {
+      max-height: 150px;
+      object-fit: contain;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .card h2 {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    .button {
+      margin-top: 0.5rem;
+      padding: 10px;
+      width: 100%;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      padding: 8px;
+      width: 300px;
+      max-width: 100%;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pitsco Educational Drone Parts Portal</h1>
+  <p>Shop parts and kits for classroom drone projects and competitions</p>
+  <input type="text" placeholder="Search parts..." disabled />
+
+  <div class="tabs">
+    <button class="active" onclick="showCategory('motors', this)">Motors</button>
+    <button class="active" onclick="showCategory('electronics', this)">Electronics</button>
+    <button onclick="showCategory('propellers', this)">Propellers</button>
+    <button onclick="showCategory('frames', this)">Frames</button>
+    <button onclick="showCategory('kits', this)">Kits</button>
+    <button onclick="showCategory('competitions', this)">Competitions</button>
+    <button onclick="showCategory('equipment', this)">Equipment</button>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+    const droneParts = {
+      electronics: [
+        { name: "Flight Controllers", description: "Brushed Motor Controller.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/t/-/t-motor-velox-f7-se-flight-controller-_image-1_1_.jpg" },
+        { name: "Radios", description: "Drone Transmitters", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/j/u/jumper-t15-elrs-2.4ghz-radio-transmitter-w--edgetx-hall-gimbals-_hero-image_.jpg" },
+        { name: "Batteries", description: "Drone Batteries", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/x/i/xilo-1250mah-6s-100c-basher-lipo-battery-xt60-main.jpg" }
+      ],
+      motors: [
+        { name: "Brushless Motors", description: "High-efficiency motor for racing drones.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/t/-/t-motor-velox-v2306-v3-motor---1500kv-_hero-image_.jpg" },
+        { name: "Brushed Motors", description: "Optimized for indoor cinematic drones.", image: "https://www.pitsco.com/cdn/shop/files/92133_featured.jpg?v=1718136671&width=800" }
+      ],
+      propellers: [
+        { name: "5\" Tri-blade Prop", description: "Balanced for smooth flight and control.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/l/u/lumenier-gate-breaker-propeller-transparent-black.jpg" },
+        { name: "6\" Racing Prop", description: "Lightweight and durable, ideal for speed.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/g/e/gemfan-lr5126-gray.jpg" }
+      ],
+      frames: [
+        { name: "Carbon Fiber Frame", description: "Lightweight and strong, supports most builds.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/i/f/iflight-protek35-3.5-hd-cinewhoop-frame-bottom-plate.jpg" },
+        { name: "Plastic Frame", description: "Compact for indoor flying.", image: "https://cdn-v2.getfpv.com/media/catalog/product/cache/3979b3fd908fbb12b31974edb6316b2e/d/i/diatone-taycan-mxc3.1-3-cinewhoop-frame-kit-w-red-ducts-main.jpg" }
+      ],
+      kits: [
+        { name: "Beginner Drone Kit", description: "Everything needed to build your first drone.", image: "https://www.pitsco.com/cdn/shop/files/92130_featured.jpg?v=1715638821&width=800" },
+        { name: "STEM Classroom Pack", description: "Kit for classroom drone-building projects.", image: "https://www.pitsco.com/cdn/shop/files/92855_featured.jpg?v=1718137236&width=800" }
+      ],
+      competitions: [
+        { name: "TSA", description: "TSA approved drone parts.", image: "https://tsaweb.org/ResourcePackages/Bootstrap5/assets/dist/img/TSA_logo.png" },
+        { name: "SkillsUSA", description: "SkillsUSA approved drone parts.", image: "https://www.skillsusa.org/wp-content/themes/timberland/theme/assets/images/logo.png" }
+      ],
+      equipment: [
+        { name: "Arena", description: "Pitsco Drone Arena.", image: "https://www.pitsco.com/cdn/shop/files/45952_featured.jpg?v=1731095800&width=800" },
+        { name: "Challenge Elements", description: "Drone Challenge Elements.", image: "https://www.pitsco.com/cdn/shop/files/46786_featured.jpg?v=1718135644&width=800" }
+      ]
+    };
+
+    function showCategory(category, button) {
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      const content = document.getElementById("content");
+      const parts = droneParts[category];
+
+      content.innerHTML = '<div class="grid">' + parts.map(part => `
+        <div class="card">
+          <img src="${part.image}" alt="${part.name}">
+          <h2>${part.name}</h2>
+          <p>${part.description}</p>
+          <button class="button">View Details</button>
+        </div>
+      `).join('') + '</div>';
+    }
+
+    // Initial load
+    showCategory('motors', document.querySelector('.tabs button'));
+  </script>
+</body>
+</html>
